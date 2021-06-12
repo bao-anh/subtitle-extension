@@ -3,28 +3,24 @@
 const messagesFromReactAppListener = (message, sender) => {
 
 	if (sender.id === chrome.runtime.id) {
-		// const discussion = document.getElementById('discussion_bucket');
-		const video = document.getElementsByTagName('video');
-		const currentTime = video[0].currentTime;
-		// video[0].style.display = 'none';
-		// setInterval(() => console.log('running'), 1000);
-		const content = message.script.results.items.find(item => {
-			if (currentTime > item.start_time && currentTime < item.end_time)	return true;
-			return false;
-		});
-		let div = document.createElement("div")
-		div.textContent = content.alternatives[0].content;
 		const roomVideo = document.getElementById('roomVideo');
+		const video = document.getElementsByTagName('video')[0];
+		// append subtitle div into roomVideo
+		let div = document.createElement('div');
+		div.setAttribute('id', 'video-subtitle');
+		div.style.textAlign = 'center';
 		roomVideo.appendChild(div);
-		// video[0].parentElement.removeChild(newChild);
-	}
 
-	// if (
-	// 	sender.id === chrome.runtime.id &&
-	// 	message.message === "delete logo") {
-	// 	const logo = document.getElementById('hplogo');
-	// 	logo.parentElement.removeChild(logo)
-	// }
+		video.ontimeupdate = function () {
+			// get current content of subtitle
+			let content = message.script.results.items.find(item => {
+				if (video.currentTime > item.start_time && video.currentTime < item.end_time) return true;
+				return false;
+			});
+			// assign content of div to subtitle
+			div.textContent = content?.alternatives[0].content;
+		}
+	}
 }
 
 /**
