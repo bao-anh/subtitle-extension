@@ -1,5 +1,4 @@
 /*global chrome*/
-
 const subtitleElementId = 'video-subtitle';
 
 const initSubtitleElement = () => {
@@ -29,15 +28,36 @@ const renderSubtitleWhileRunningVideo = (data, subtitleElement) => {
 	}
 }
 
-const messagesFromReactAppListener = (message, sender) => {
-	if (sender.id === chrome.runtime.id) {
-		fetch('https://60c4528b2df2cb00178ac4d3.mockapi.io/api/6672/subtitle/1')
-			.then(response => response.json())
-			.then(data => {
-				const subtitleElement = initSubtitleElement();
-				renderSubtitleWhileRunningVideo(data, subtitleElement);
-			})
+const handleDisplaySubtitle = (data) => {
+	const subtitleElement = document.getElementById(subtitleElementId);
+	if (subtitleElement) subtitleElement.style.visibility = 'visible';
+	else {
+		const subtitleElement = initSubtitleElement();
+		renderSubtitleWhileRunningVideo(data, subtitleElement);
 	}
+}
+
+const handleHideSubtitle = () => {
+	const subtitleElement = document.getElementById(subtitleElementId);
+	if (subtitleElement) subtitleElement.style.visibility = 'hidden';
+}
+
+const handleGetSubtitleStatus = () => {
+	const subtitleElement = document.getElementById(subtitleElementId);
+	if (subtitleElement && subtitleElement.style.visibility !== 'hidden') return true;
+	return false;
+}
+
+const messagesFromReactAppListener = (message, sender, response) => {
+	const { isShowSubtitle, data, getSubtitleStatus } = message;
+
+	if (sender.id !== chrome.runtime.id) return;
+	if (getSubtitleStatus) {
+		response(handleGetSubtitleStatus());
+		return;
+	}
+	if (isShowSubtitle) handleDisplaySubtitle(data);
+	else handleHideSubtitle();
 }
 /**
  * Fired when a message is sent from either an extension process or a content script.

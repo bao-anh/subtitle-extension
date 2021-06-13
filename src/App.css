@@ -1,9 +1,38 @@
+@import '~antd/dist/antd.css';
+
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
   background-color: #fafafa;
-  height: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.header-divider {
+  margin: 0 0 8px !important;
+}
+
+.warning {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.warning-element {
+  margin-bottom: 8px;
+}
+
+.actions {
+  margin-bottom: 16px;
+}
+
+.button {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
